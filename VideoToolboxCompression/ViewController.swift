@@ -155,7 +155,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let path = NSTemporaryDirectory() + "/temp.h264"
+        let documents = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as! String
+        let path = documents + "/temp.h264"
         try? FileManager.default.removeItem(atPath: path)
         if FileManager.default.createFile(atPath: path, contents: nil, attributes: nil) {
             fileHandler = FileHandle(forWritingAtPath: path)
@@ -166,7 +167,7 @@ class ViewController: UIViewController {
         if captureSession.canAddInput(input) {
             captureSession.addInput(input)
         }
-        captureSession.sessionPreset = .high
+        captureSession.sessionPreset = .hd1920x1080
         let output = AVCaptureVideoDataOutput()
         // YUV 420v
         output.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange]
@@ -230,9 +231,9 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             return
         }
         
-//        if CVPixelBufferIsPlanar(pixelbuffer) {
-//            print("planar: \(CVPixelBufferGetPixelFormatType(pixelbuffer))")
-//        }
+        if CVPixelBufferIsPlanar(pixelbuffer) {
+            print("planar: \(CVPixelBufferGetPixelFormatType(pixelbuffer))")
+        }
 //
 //        var desc: CMFormatDescription?
 //        CMVideoFormatDescriptionCreateForImageBuffer(kCFAllocatorDefault, pixelbuffer, &desc)
